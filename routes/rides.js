@@ -9,9 +9,7 @@ router.get('/',async(req,res)=>{
         const rides=await Ride.find().populate([
             {path:'driver',select:'firstName lastName phone'},
             {path:'passenger',select:'firstName lastName phone user'},
-            {path:'operator',select:'firstName lastName'},
-            {path:'address',select:'street town postalCode country'},
-            {path:'address',select:'street town postalCode country'}
+            {path:'endAddress',select:'street town postalCode country'}
         ]);
         res.json(rides);
     }catch(err){
@@ -24,8 +22,6 @@ router.get('/:id',async(req,res)=>{
         const ride=await Ride.findById(req.params.id).populate([
             {path:'driver',select:'firstName lastName phone'},
             {path:'passenger',select:'firstName lastName phone user'},
-            {path:'operator',select:'firstName lastName'},
-            {path:'address',select:'street town postalCode country'},
             {path:'address',select:'street town postalCode country'}
         ]);
         if(ride){
@@ -42,6 +38,7 @@ router.post('/',async(req,res)=>{
     const ride=new Ride(req.body);
     try{
         const newRide=await ride.save();
+        req.io.emit('rideAdded',newRide);
         res.status(201).json(newRide);
     }catch(err){
         res.status(400).json({message:err.message});
