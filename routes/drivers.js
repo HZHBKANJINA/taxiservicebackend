@@ -6,7 +6,7 @@ const Driver=require('../models/driver');
 
 router.get('/',async(req,res)=>{
     try{
-        const drivers=await Driver.find().populate({path:'address',select:'street town'}).populate({path:'vehicle',select:'brand model license'});
+        const drivers=await Driver.find().populate({path:'address',select:'street town postalCode country'}).populate({path:'vehicle',select:'brand model license'});
         res.json(drivers);
     }catch(err){
         res.status(500).json({message:err.message});
@@ -15,7 +15,7 @@ router.get('/',async(req,res)=>{
 
 router.get('/:id',async(req,res)=>{
     try{
-        const driver=await Driver.findById(req.params.id).populate({path:'address',select:'street town'}).populate({path:'vehicle',select:'brand model license'});
+        const driver=await Driver.findById(req.params.id).populate({path:'address',select:'street town postalCode country'}).populate({path:'vehicle',select:'brand model license'});
         if(driver){
             res.json(driver);
         }else{
